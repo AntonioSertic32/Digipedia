@@ -1,0 +1,11 @@
+-bootsrap na pocetnoj
+-dodavanje clanaka nova stranica
+-administracijski portal
+-podèlanci isto kao u wiki
+-samo registrirani korisnici mogu dodati èlanak,tražilica je javna
+-adminstator može dodati nove korisnike
+-dodati moguènost podjele èlanka da ga uz mene i još neko drugi od korisnika može ažurirati i da se vidi ko ga je ažurirao,jedan je vlasnik èlanka a urednika može biti više,korisnièka oznaka mora biti jedinstvena
+-promjeniti naziv, poèetnu sliku, (digipedia)
+-ocijena èlanka, da svi korisnici mogu ocijenit èlanak na temelju zvijezddica da bude vizualno lijepo
+
+-admin moze mjenjati kategorije, korisnici nemogu, admin moze dodavati novog amina i korisnika 

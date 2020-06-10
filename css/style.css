@@ -1,0 +1,143 @@
+/* ----------------------------------------------------------------------- Osnovno */
+
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
+.row {
+  margin-right: 0px !important;
+  margin-left: 0px !important;
+}
+
+/* Navigacija */
+
+.navbar-brand,
+.nav-link {
+  text-shadow: 2px 2px black;
+  font-size: 25px;
+}
+.nav-link {
+  margin-right: 10px;
+}
+.navbar {
+  border-bottom: 1px solid black;
+}
+
+/* Kategorije s desne strane */
+
+.desno {
+  border-left: 1px solid black;
+  height: auto;
+  margin: 0 !important;
+}
+.desno article,
+.desno h1 {
+  padding-left: 0px !important;
+  padding-top: 5px;
+}
+.desno article {
+  display: block;
+}
+.desno article button {
+  width: 393px;
+  text-shadow: 2px 2px black;
+  padding: 5px;
+}
+.desno h1 {
+  padding: 15px 0px;
+  text-align: center;
+  text-shadow: 5px 5px black;
+  margin-bottom: 4px;
+}
+
+/* ----------------------------------------------------------------------- home.html */
+
+/* Kartice na lijevoj strani */
+
+.lijevo {
+  padding-left: 0;
+}
+.lijevo h2 {
+  padding-left: 20px;
+  text-align: center;
+  text-shadow: 5px 5px black;
+  font-size: 50px;
+}
+.slikaKartice {
+  width: 18rem;
+  height: 220px;
+}
+
+.card-body {
+  height: 200px;
+  overflow: hidden;
+}
+
+.card {
+  display: inline-block;
+  margin: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+article {
+  display: inline-block;
+}
+
+.dodavanje_clanka {
+  margin-left: 36px;
+}
+
+/* ----------------------------------------------------------------------- single_article.html */
+
+.pretrazivanje {
+  margin: 20px 0;
+  padding-left: 0;
+}
+
+.clanci {
+  margin-left: 40px;
+  margin-top: 20px;
+}
+
+.clanakPregled {
+  margin-top: 100px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 40px;
+}
+
+.slikaIsadrzajClanka {
+  margin-top: 70px;
+}
+.slikaIsadrzajClanka p {
+  margin-top: 20px;
+}
+
+.slikaIsadrzajClanka * {
+  display: inline-block;
+}
+
+.podclanakPregled {
+  margin-top: 50px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 40px;
+}
+
+.buttons {
+  display: inline-block;
+}
+.buttons button {
+  width: 50px;
+  height: 50px;
+  padding: auto;
+  margin-left: 10px;
+}
+.gumbi {
+  margin-top: 10px;
+}

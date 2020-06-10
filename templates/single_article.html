@@ -1,0 +1,351 @@
+<!-- ---------------------------------------------------------------------------------------- Navigacija -->
+
+<nav
+  class="navbar navbar-expand-sm navbar-dark"
+  ng-init="CheckLoggedIn(); CheckAdmin()"
+>
+  <a class="navbar-brand text-primary" href="#"
+    ><img src="assets/img/logo.png" width="30" height="30" alt="logo" />
+    Digipedia</a
+  >
+
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbar-list"
+    aria-controls="navbarNav"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbar-list">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" ng-if="loggedin">
+      </li>
+      <li class="nav-item" ng-if="admin">
+      </li>
+    </ul>
+
+    <ul class="navbar-nav">
+      <li class="nav-item" ng-if="!loggedin">
+        <a class="nav-link text-primary" href="" ng-click="modalLogIn()"
+          ><i class="fa fa-user"></i> Prijava</a
+        >
+      </li>
+      <li class="nav-item" ng-if="!loggedin">
+        <a class="nav-link text-primary" href="" ng-click="modalSignUp()"
+          ><i class="fa fa-sign-in"></i> Registracija</a
+        >
+      </li>
+      <li class="nav-item" ng-if="loggedin">
+        <button class="btn btn-outline-warning" ng-click="Logout()">
+          Odjava
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ---------------------------------------------------------------------------------------- Seredina stranice -->
+
+<div class="row" ng-init="ShowSingleArticle()">
+    <section class="col-sm-10 lijevo">
+
+    <!-- ---------------------------------------------------------------- Članak -->
+      
+        <div class="container clanakPregled bg-primary">
+          <div class="container-fluid d-flex" ng-class="{' justify-content-between': loggedin, ' justify-content-center': !loggedin}">
+      
+            <h2 class="text-white d-inline">{{article_title}}</h2>
+            
+            <p></p>
+            
+            <div class="buttons">
+              <button ng-if="loggedin" class="btn bg-danger" ng-click="clanakBrisanje()">
+                <i class="fa fa-trash fa-2x"></i>
+              </button>
+
+              <button ng-if="loggedin" class="btn bg-success" ng-click="clanakEdit()">
+                <i class="fa fa-edit fa-2x"></i>
+              </button>
+
+              
+            </div>
+          </div>
+
+            <div class="slikaIsadrzajClanka">
+                <img
+                class="align-top slikaKartice col-sm-4"
+                src="assets/img/2.png"
+                alt="Card image cap"
+            />
+            <div class="col-sm-2"></div>
+            <p class="text-white col-sm-6">{{article_content}}</p>
+            </div>
+        </div>
+        
+        <!-- ---------------------------------------------------------------- Podčlanci -->
+
+        
+          <section ng-init="getSubarticles()">
+            <div class="container" ng-repeat="subarticle in subarticles">
+              <div ng-if="article_id == subarticle.mainArticleID" class="podclanakPregled bg-primary">
+                <h5 href="" class="subarticles-list text-white"> {{subarticle.title}}</h5>
+                <p>{{subarticle.content}}</p>
+
+              </div>
+                
+            </div>
+          </section>
+
+    </section>
+    
+  <!-- ---------------------------------------------------------------------------------------- Kategorije sa strane -->
+  
+    <section class="col-sm-2 desno" ng-init="getCategories()">
+      <h1 class="text-white">Kategorije</h1>
+      <article ng-repeat="category in categories">
+        <button
+          type="button"
+          class="btn btn-primary"
+          ng-click="GetAllFromCategory(category.categoryID,category.categoryName)"
+        >
+          <h5>{{category.categoryName}}</h5>
+        </button>
+      </article>
+      <div style="height: 17px;"></div>
+    </section>
+  </div>
+
+  
+<!-- --------------------------------------------------------------------------------------------------- -->
+<!-- -------------------------------------------------------------------------------------------- Modali -->
+<!-- --------------------------------------------------------------------------------------------------- -->
+
+<!-- ---------------------------------------------------- Prijava -->
+
+<div class="modal fade" id="modalLogIn" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Prijava</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <section class="login">
+          <div class="container">
+            <div class="row justify-content-md-center">
+              <div class="card-wrapper">
+                <div>
+                  <div>
+                    <form>
+                      <div>
+                        <label for="name">Korisničko ime</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="name"
+                          required
+                          autofocus
+                          ng-model="username"
+                        />
+                      </div>
+
+                      <div>
+                        <label for="password">Lozinka</label>
+                        <input
+                          type="password"
+                          class="form-control"
+                          name="password"
+                          required
+                          data-eye
+                          ng-model="password"
+                        />
+                      </div>
+                      <br />
+                      <div>
+                        <button
+                          ng-disabled="!username || username ==0 || !password || password ==0"
+                          class="btn btn-primary btnLogin"
+                          ng-click="Login()"
+                        >
+                          Prijava
+                        </button>
+                      </div>
+                      <br />
+                      <div class="margin-top20 text-center">
+                        Niste registrirani?
+                        <a href="" ng-click="OtvoriModalReg()">Registracija</a>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Zatvori
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ---------------------------------------------------- Registracija -->
+
+<div class="modal fade" id="modalSignUp" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Registracija</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <section class="register">
+          <div class="container">
+            <div class="row justify-content-md-center">
+              <div class="card-wrapper">
+                <div>
+                  <div>
+                    <form>
+                      <div>
+                        <label for="name">Korisničko ime</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="name"
+                          required
+                          autofocus
+                          ng-model="username"
+                        />
+                      </div>
+
+                      <div>
+                        <label for="password">Lozinka</label>
+                        <input
+                          type="password"
+                          class="form-control"
+                          name="password"
+                          required
+                          data-eye
+                          ng-model="password"
+                        />
+                      </div>
+                      <br />
+                      <div>
+                        <button
+                          ng-disabled="!username || username ==0 || !password || password ==0"
+                          class="btn btn-primary btnRegister"
+                          ng-click="Register()"
+                        >
+                          Registracija
+                        </button>
+                      </div>
+                      <br />
+                      <div class="margin-top20 text-center">
+                        Imate račun?
+                        <a href="" ng-click="OtvoriModalLog()">Prijava</a>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Zatvori
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- -------------------------------------------------------------------------------------------- Modali -->
+
+<div class="modal fade bd-example-modal-lg" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" ng-model="article_id">
+            <div class="col-md-12 mb-3 mt-3">
+                <div class="form-group">
+                    <label for="edit_article_title">Naslov članka</label>
+                    <input class="form-control" id="edit_article_title" rows="3" ng-model="article_title"></input>
+                </div>
+                <div class="form-group">
+                    <label for="edit_article_content">Sadržaj članka</label>
+                    <textarea class="form-control" id="edit_article_content" rows="3"
+                        ng-model="article_content"></textarea>
+                </div>
+                <button class="btn btn-md btn-primary mb-3" ng-click="EditArticle(article_id)"
+                    style="float:right">Spremi
+                    članak</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" ng-model="article_id">
+            <div class="col-md-12 mb-3 mt-3">
+                <div class="form-group">
+                    <label for="edit_article_title">Naslov članka</label>
+                    <input class="form-control" id="edit_article_title" rows="3" ng-model="article_title"
+                        disabled></input>
+                </div>
+                <div class="form-group">
+                    <label for="edit_article_content">Sadržaj članka</label>
+                    <textarea class="form-control" id="edit_article_content" rows="3" ng-model="article_content"
+                        disabled></textarea>
+                </div>
+                <button class="btn btn-md btn-danger mb-3" ng-click="DeleteArticle(article_id)"
+                    style="float:right">Obriši
+                    članak</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg modalAddSubarticle" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" ng-model="article_id">
+            <div class="col-md-12 mb-3 mt-3">
+                <div class="form-group">
+                    <label for="new_sub_title">Naslov podčlanka</label>
+                    <input class="form-control" id="new_sub_title" ng-model="sub_title" required rows="3"></input>
+                </div>
+                <div class="form-group">
+                    <label for="edit_article_content">Sadržaj podčlanka</label>
+                    <textarea class="form-control" id="new_sub_content" ng-model="sub_content" rows="3"></textarea>
+                </div>
+                <button class="btn btn-md btn-primary mb-3" ng-click="AddSubarticle(article_id)"
+                    style="float:right">Spremi
+                    podčlanak</button>
+            </div>
+        </div>
+    </div>
+</div>

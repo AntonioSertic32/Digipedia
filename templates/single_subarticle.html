@@ -1,0 +1,115 @@
+<nav class="navbar navbar-expand-sm navbar-dark" ng-init="CheckLoggedIn(); CheckAdmin()">
+    <a class="navbar-brand" href="#">
+        <img src="assets/img/logo.png" width="20" height="20" alt="logo">
+        digipedia
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar-list">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#!/">Početna</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#!/search">Pretraži</a>
+            </li>
+            <li class="nav-item" ng-if="loggedin">
+                <a class="nav-link" href="#!/new_article">Novi članak</a>
+            </li>
+            <li class="nav-item" ng-if="admin">
+                <a class="nav-link" href="#!/administration">Administracijski portal</a>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav">
+            <li class="nav-item" ng-if="!loggedin">
+                <a class="nav-link" href="#!/login">Prijava</a>
+            </li>
+            <li class="nav-item" ng-if="!loggedin">
+                <a class="nav-link" href="#!/register">Registracija</a>
+            </li>
+            <li class="nav-item" ng-if="loggedin">
+                <button class="btn btn-outline-warning" ng-click="Logout()">Odjava</button>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="row" ng-init="ShowSingleSubarticle()">
+    <section class="col-md-10 col-sm-8 col-xs-4 mr-3 ml-3 mt-5">
+        <article>
+            <div class="card mb-3 mr-4 ">
+                <h5 class="card-header bg-primary text-white">{{subarticle_title}}</h5>
+                <div class="card-body bg-dark">
+                    <p class="card-text  text-white font-weight-bold">{{subarticle_content}}</p>
+                </div>
+                <div class="card-footer bg-dark" ng-if="loggedin">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modalEditSubarticle"
+                        style="display: inline-block;">Uredi
+                        podčlanak</button>
+
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target=".modalDeleteSubarticle"
+                        style="display: inline-block;">Obriši
+                        podčlanak</button>
+
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="col-md-1 mr-3 ml-3 mt-5" ng-init="getCategories()">
+        <h2 class="text-white">Kategorije</h2>
+        <article ng-repeat="category in categories">
+            <a href="" class="text-light" ng-click="GetAllFromCategory(category.categoryID,category.categoryName)">
+                <h5>{{category.categoryName}}</h5>
+            </a>
+        </article>
+    </section>
+</div>
+
+
+<div class="modal fade bd-example-modal-lg modalEditSubarticle" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" ng-model="subarticle_id">
+            <div class="col-md-12 mb-3 mt-3">
+                <div class="form-group">
+                    <label for="edit_subarticle_title">Naslov podčlanka</label>
+                    <input class="form-control" id="edit_subarticle_title" rows="3" ng-model="subarticle_title"></input>
+                </div>
+                <div class="form-group">
+                    <label for="edit_subarticle_content">Sadržaj podčlanka</label>
+                    <textarea class="form-control" id="edit_subarticle_content" rows="3" ng-model="subarticle_content"></textarea>
+                </div>
+                <button class="btn btn-md btn-primary mb-3" ng-click="EditSubarticle(subarticle_id)"
+                    style="float:right">Spremi
+                    podčlanak</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg modalDeleteSubarticle" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" ng-model="subarticle_id">
+            <div class="col-md-12 mb-3 mt-3">
+                <div class="form-group">
+                    <label for="delete_subarticle_title">Naslov podčlanka</label>
+                    <input class="form-control" id="delete_subarticle_title" rows="3" ng-model="sub_title"
+                        disabled></input>
+                </div>
+                <div class="form-group">
+                    <label for="delete_subarticle_content">Sadržaj podčlanka</label>
+                    <textarea class="form-control" id="delete_subarticle_content" rows="3" ng-model="subarticle_content"
+                        disabled></textarea>
+                </div>
+                <button class="btn btn-md btn-danger mb-3" ng-click="DeleteSubarticle(subarticle_id)"
+                    style="float:right">Obriši
+                    podčlanak</button>
+            </div>
+        </div>
+    </div>
+</div>
