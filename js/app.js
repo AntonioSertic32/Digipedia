@@ -5,28 +5,10 @@ oWikiModul.config(function ($routeProvider) {
     templateUrl: "templates/home.html",
     controller: "wikiController",
   });
-  $routeProvider.when("/login", {
-    templateUrl: "templates/login.html",
-    controller: "wikiController",
-  });
-  $routeProvider.when("/register", {
-    templateUrl: "templates/register.html",
-    controller: "wikiController",
-  });
-  $routeProvider.when("/search", {
-    templateUrl: "templates/search.html",
-    controller: "wikiController",
-  });
-  $routeProvider.when("/new_article", {
-    templateUrl: "templates/new_article.html",
-    controller: "wikiController",
-  });
-
   $routeProvider.when("/category/:path", {
     templateUrl: "templates/category.html",
     controller: "wikiController",
   });
-
   $routeProvider.when("/article/:path", {
     templateUrl: "templates/single_article.html",
     controller: "wikiController",
@@ -35,10 +17,20 @@ oWikiModul.config(function ($routeProvider) {
     templateUrl: "templates/single_subarticle.html",
     controllet: "wikiController",
   });
-  $routeProvider.when("/administration", {
-    templateUrl: "templates/administration.html",
+
+  $routeProvider.when("/administration_users", {
+    templateUrl: "templates/administration_users.html",
     controller: "wikiController",
   });
+  $routeProvider.when("/administration_categorys", {
+    templateUrl: "templates/administration_categorys.html",
+    controller: "wikiController",
+  });
+  $routeProvider.when("/administration_articles", {
+    templateUrl: "templates/administration_articles.html",
+    controller: "wikiController",
+  });
+
   $routeProvider.otherwise({
     template: "Greška",
   });
