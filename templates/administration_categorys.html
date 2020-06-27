@@ -62,34 +62,51 @@
 <div ng-if="admin">
   <div class="row">
     <section class="col-sm-10 lijevo" ng-init="getArticles()">
-        <div class=" text-white">
-            <h4>Nova kategorija</h4>
-            <form>
-                <div class="form-group">
-                    <label for="input_category_name">Naziv kategorije</label>
-                    <input type="text" class="form-control" id="input_category_name" rows="3" ng-model="categoryName"></input>
-                </div>
-                <button class="btn btn-md btn-success" ng-click="AddCategory()" style="float:right">Dodaj
-                    kategoriju</button>
-            </form>
-        </div>
-        <div class=" text-white" ng-init="getCategories()">
-            <h4>Kategorije</h4>
-            <table class="table table-dark">
-                <thead>
-                    <tr>
-                        <th scope="col">Naziv kategorije</th>
-                        <th scope="col">Brisanje</th>
-                    </tr>
-                </thead>
-                <tbody ng-repeat="category in categories">
-                    <tr>
-                        <td>{{category.categoryName}}</td>
-                        <td><button class="btn btn-md btn-danger mb-3" ng-click="DeleteCategory(category.categoryID)"
-                            ><i class="fa fa-trash" ></i></button></td>
-                </tbody>
-            </table>
-        </div>
+      <div class="text-white">
+        <form>
+          <div
+            class="container-fluid d-flex justify-content-between"
+            style="margin: 30px 0;"
+          >
+            <div class="gumbi">
+              <button
+                ng-if="admin"
+                class="btn bg-primary btn-lg dodavanje_kategorije"
+                ng-click="modaldodavanjeKategorije()"
+              >
+                <i class="fa fa-plus"></i> Dodaj kategoriju
+              </button>
+            </div>
+
+            <h1 class="text-white">Kategorije</h1>
+
+            <p></p>
+          </div>
+        </form>
+      </div>
+      <div class="text-white" ng-init="getCategories()">
+        <table class="table table-dark text-center" style="font-size: 23px;">
+          <thead>
+            <tr>
+              <th scope="col">Naziv kategorije</th>
+              <th scope="col">Brisanje</th>
+            </tr>
+          </thead>
+          <tbody ng-repeat="category in categories">
+            <tr>
+              <td>{{category.categoryName}}</td>
+              <td>
+                <button
+                  class="btn btn-md btn-danger mb-3"
+                  ng-click="DeleteCategory(category.categoryID)"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- ---------------------------------------------------------------------------------------- Kategorije sa strane -->
@@ -118,5 +135,50 @@
         </a>
       </article>
     </section>
+  </div>
+</div>
+
+<!-- ---------------------------------------------------- Dodavanje kategorije -->
+
+<div class="modal fade" id="modaldodavanjeKategorije" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Dodaj kategoriju</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label>Naziv kategorije</label>
+            <input
+              type="text"
+              class="form-control"
+              rows="3"
+              ng-model="kategorijaName"
+            />
+          </div>
+          <button
+            class="btn btn-md btn-success"
+            ng-click="AddCategory()"
+            style="float: right;"
+          >
+            Dodaj kategoriju
+          </button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Zatvori
+        </button>
+      </div>
+    </div>
   </div>
 </div>

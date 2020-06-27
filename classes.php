@@ -1,7 +1,7 @@
 <?php
 class Configuration
 {
-    public $host = 'localhost';
+    public $host = '127.0.0.1';
     public $dbName = 'wikipedia';
     public $username = 'root';
     public $password = '';
@@ -16,6 +16,25 @@ class Admin
         $this->id = $nID;
         $this->korisnicko_ime = $sKorisnicko_ime;
         $this->lozinka = $sLozinka;
+    }
+}
+
+class Korisnik
+{
+    public $id = '';
+    public $korisnicko_ime = '';
+    public $ime = '';
+    public $prezime = '';
+    public $email = '';
+    //public $lozinka = '';
+    public function __construct($nID, $sKorisnicko_ime, $Ime, $Prezime, $Email)
+    {
+        $this->id = $nID;
+        $this->korisnicko_ime = $sKorisnicko_ime;
+        $this->ime = $Ime;
+        $this->prezime = $Prezime;
+        $this->email = $Email;
+        //$this->lozinka = $sLozinka;
     }
 }
 class Clanak

@@ -2,7 +2,7 @@
 
 <nav
   class="navbar navbar-expand-sm navbar-dark"
-  ng-init="CheckAdmin(); CheckLoggedIn()"
+  ng-init="CheckAdmin(); CheckLoggedIn(); blabla()"
 >
   <a class="navbar-brand text-primary" href="#"
     ><img src="assets/img/logo.png" width="30" height="30" alt="logo" />
@@ -61,57 +61,254 @@
 
 <div ng-if="admin">
   <div class="row">
-    <section class="col-sm-10 lijevo" ng-init="getArticles()">
-      <div class=" text-white">
-        <h4>Novi korisnik</h4>
+    <section class="col-sm-10 lijevo">
+      <div>
         <form>
-            <div class="form-group">
-                <label for="inpt_username">Username</label>
-                <input class="form-control" id="inpt_username" rows="3" ng-model="username"></input>
+          <div
+            class="container-fluid d-flex justify-content-between"
+            style="margin: 30px 0;"
+          >
+            <div class="gumbi">
+              <button
+                class="btn btn-primary btn-lg text-dark"
+                href=""
+                ng-click="modalSignUp()"
+              >
+                <i class="fa fa-plus"></i> Dodaj korisnika
+              </button>
             </div>
-            <div class="form-group">
-                <label for="inpt_password">Password</label>
-                <input class="form-control" id="inpt_password" rows="3" ng-model="password"></input>
-            </div>
-            <div class="form-group" ng-init="GetUserType()">
-                <label for="select_tip">Odaberite tip</label>
-                <select class="form-control" ng-model="tip" id="select_tip">
-                    <option ng-repeat="tip in tipovi" value="{{tip.tip}}">
-                        {{ tip.tip }}
-                    </option>
-                </select>
-            </div>
-            <button class="btn btn-md btn-success" ng-click="AddUser()" style="float:right">Dodaj
-                korisnika</button>
+
+            <h1 class="text-white">Korisnici</h1>
+
+            <p></p>
+          </div>
         </form>
+        <div class="text-white" ng-init="getUsers()">
+          <table class="table table-dark text-center" style="font-size: 23px;">
+            <thead>
+              <tr>
+                <th scope="col">Korisničko ime</th>
+                <th scope="col">Ime</th>
+                <th scope="col">Prezime</th>
+                <th scope="col">Email</th>
+                <th scope="col">Brisanje</th>
+              </tr>
+            </thead>
+            <tbody ng-repeat="user in users">
+              <tr>
+                <td>{{user.korisnicko_ime}}</td>
+                <td>{{user.ime}}</td>
+                <td>{{user.prezime}}</td>
+                <td>{{user.email}}</td>
+                <td>
+                  <button
+                    class="btn btn-md btn-danger mb-3"
+                    ng-click="DeleteUser(user.id)"
+                  >
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
-  
-<!-- ---------------------------------------------------------------------------------------- Kategorije sa strane -->
 
-<section class="col-sm-2 desno">
-  <h1 class="text-white">Izbornik</h1>
-  <article>
-    <a href="#!administration_users">
-      <button type="button" class="btn btn-primary">
-        <h5>Korisnici</h5>
-      </button>
-    </a>
-  </article>
-  <article>
-    <a href="#!administration_categorys">
-      <button type="button" class="btn btn-primary">
-        <h5>Kategorije</h5>
-      </button>
-    </a>
-  </article>
-  <article>
-    <a href="#!administration_articles">
-      <button type="button" class="btn btn-primary">
-        <h5>Članci</h5>
-      </button>
-    </a>
-  </article>
-</section>
+    <!-- ---------------------------------------------------------------------------------------- Kategorije sa strane -->
+
+    <section class="col-sm-2 desno">
+      <h1 class="text-white">Izbornik</h1>
+      <article>
+        <a href="#!administration_users">
+          <button type="button" class="btn btn-primary">
+            <h5>Korisnici</h5>
+          </button>
+        </a>
+      </article>
+      <article>
+        <a href="#!administration_categorys">
+          <button type="button" class="btn btn-primary">
+            <h5>Kategorije</h5>
+          </button>
+        </a>
+      </article>
+      <article>
+        <a href="#!administration_articles">
+          <button type="button" class="btn btn-primary">
+            <h5>Članci</h5>
+          </button>
+        </a>
+      </article>
+    </section>
+  </div>
+</div>
+
+<div class="modal fade" id="modalSignUp" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Registracija</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <section class="register">
+          <div class="container">
+            <div class="row justify-content-md-center">
+              <div class="card-wrapper">
+                <div>
+                  <div>
+                    <form>
+                      <div>
+                        <label for="name">Korisničko ime</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="name"
+                          required
+                          autofocus
+                          ng-model="username"
+                        />
+                      </div>
+
+                      <div>
+                        <label for="password">Lozinka</label>
+                        <input
+                          type="password"
+                          class="form-control"
+                          name="password"
+                          required
+                          data-eye
+                          ng-model="password"
+                        />
+                      </div>
+
+                      <div class="form-group" ng-init="GetUserType()">
+                        <label for="select_tip">Odaberite tip</label>
+                        <select
+                          class="form-control"
+                          ng-model="tip_input"
+                          id="select_tip"
+                        >
+                          <option ng-repeat="tip in tipovi" value="{{tip.tip}}">
+                            {{ tip.tip }}
+                          </option>
+                        </select>
+                      </div>
+                      <br />
+                      <div>
+                        <button
+                          ng-disabled="!username || username ==0 || !password || password ==0"
+                          class="btn btn-primary btnRegister"
+                          ng-click="AddUser()"
+                        >
+                          Registracija
+                        </button>
+                      </div>
+                      <br />
+                      <div class="margin-top20 text-center">
+                        Imate račun?
+                        <a href="" ng-click="OtvoriModalLog()">Prijava</a>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Zatvori
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ---------------------------------------------------- Prijava -->
+
+<div class="modal fade" id="modalLogIn" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Prijava</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <section class="login">
+          <div class="container">
+            <div class="row justify-content-md-center">
+              <div class="card-wrapper">
+                <div>
+                  <div>
+                    <form>
+                      <div>
+                        <label for="name">Korisničko ime</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="name"
+                          required
+                          autofocus
+                          ng-model="username"
+                        />
+                      </div>
+
+                      <div>
+                        <label for="password">Lozinka</label>
+                        <input
+                          type="password"
+                          class="form-control"
+                          name="password"
+                          required
+                          data-eye
+                          ng-model="password"
+                        />
+                      </div>
+                      <br />
+                      <div>
+                        <button
+                          ng-disabled="!username || username ==0 || !password || password ==0"
+                          class="btn btn-primary btnLogin"
+                          ng-click="Login()"
+                        >
+                          Prijava
+                        </button>
+                      </div>
+                      <br />
+                      <div class="margin-top20 text-center">
+                        Niste registrirani?
+                        <a href="" ng-click="OtvoriModalReg()">Registracija</a>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Zatvori
+        </button>
+      </div>
+    </div>
   </div>
 </div>

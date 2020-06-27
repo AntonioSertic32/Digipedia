@@ -32,7 +32,7 @@ switch ($sActionID) {
         $Username = $oPostData->username;
         $Password = $oPostData->password;
 
-        $sQuery = "SELECT * FROM user WHERE username='$Username' AND password='$Password'";
+        $sQuery = "SELECT * FROM user WHERE username='$Username' OR email='$Username' AND password='$Password'";
         $oRecord = $oConnection->query($sQuery);
         $row = $oRecord->fetch();
         $count = $oRecord->rowCount();
@@ -80,13 +80,21 @@ switch ($sActionID) {
     case 'register':
         $Username = $oPostData->username;
         $Password = $oPostData->password;
+
+        $Ime = $oPostData->ime;
+        $Prezime = $oPostData->prezime;
+        $Email = $oPostData->email;
+
         $Type = $oPostData->type;
 
-        $sQuery = "INSERT INTO user (username, password, type) VALUES (:username, :password, :type)";
+        $sQuery = "INSERT INTO user (username, password, type, ime, prezime, email) VALUES (:username, :password, :type, :ime, :prezime, :email)";
 
         $oData = array(
             'username' => $Username,
             'password' => $Password,
+            'ime' => $Ime,
+            'prezime' => $Prezime,
+            'email' => $Email,
             'type' => $Type,
         );
 
@@ -111,7 +119,7 @@ switch ($sActionID) {
         $Article_title = $oPostData->article_title;
         $Article_content = $oPostData->article_content;
 
-        echo $sQuery = "INSERT INTO article (article_title, article_content, categoryID) VALUES (:article_title, :article_content, :categoryID)";
+        $sQuery = "INSERT INTO article (article_title, article_content, categoryID) VALUES (:article_title, :article_content, :categoryID)";
         $oStatement = $oConnection->prepare($sQuery);
         $oData = array(
             'article_title' => $Article_title,
@@ -135,7 +143,8 @@ switch ($sActionID) {
         $UserID = $_SESSION['user_id'];
         $Date = date('Y-m-d H:i:s');
 
-        $sQuery = "UPDATE article SET article_title='$Article_title', article_content='$Article_content' WHERE articleID ='$ArticleID'";
+        $sQuery = "UPDATE article SET article_title='$Article_title', article_content='$Article_content' WHERE articleID =$ArticleID";
+        //UPDATE article SET article_title='gay', article_content='cigan' WHERE articleID =109
 
         $sQueryEdit = "INSERT INTO edit_history(user_id, article_id, date) VALUES (:user_id, :article_id, :date)";
         $oStatement = $oConnection->prepare($sQuery);
@@ -229,6 +238,19 @@ switch ($sActionID) {
             echo $error;
             echo 0;
         }
+        case 'delete_user':
+            $sUser_id = $oPostData->user_id;
+            //echo 
+            $sQuery = "DELETE FROM user WHERE user_id ='$sUser_id' ";
+            $oStatement = $oConnection->prepare($sQuery);
+            try
+            {
+                $oStatement->execute();
+                echo 1;
+            } catch (PDOException $error) {
+                echo $error;
+                echo 0;
+            }
     break;
 
         case 'add_subarticle':
@@ -236,7 +258,7 @@ switch ($sActionID) {
         $sub_title = $oPostData->sub_title;
         $sub_content = $oPostData->sub_content;
 
-        $sQuery = "INSERT INTO subarticle (sub_title, sub_content, articleID) VALUES (:sub_title, :sub_content, :articleID)";
+        $sQuery = "INSERT INTO subarticle (subarticleID, sub_title, sub_content, articleID) VALUES ( null, :sub_title, :sub_content, :articleID)";
         $oStatement = $oConnection->prepare($sQuery);
         $oData = array(
             'sub_title' => $sub_title,
@@ -260,7 +282,7 @@ switch ($sActionID) {
         $UserID = $_SESSION['user_id'];
         $Date = date('Y-m-d H:i:s');
 
-        $sQuery = "UPDATE subarticle SET sub_title=:sub_title, sub_content=:sub_content WHERE subarticleID =$SubarticleID";
+        $sQuery = "UPDATE subarticle SET sub_title='$sub_title', sub_content='$sub_content' WHERE subarticleID =$SubarticleID";
 
         $sQueryEdit = "INSERT INTO edit_history(user_id, article_id, date) VALUES (:user_id, :article_id, :date)";
         $oStatement = $oConnection->prepare($sQuery);
@@ -301,6 +323,53 @@ switch ($sActionID) {
             echo 0;
         }
 
+    break;
+
+    case 'ocijeni' : 
+        $Ocjena = $oPostData->ocjena;
+        $Clanak = $oPostData->clanak;
+        $Korisnik = $oPostData->korisnik;
+        
+        // provjera da li vec ima u bazi od tog korisnika
+        $sQueryP = "SELECT * FROM article_rating WHERE userID='$Korisnik' AND articleID='$Clanak'";
+        $oRecordP = $oConnection->query($sQueryP);
+        $count = $oRecordP->rowCount();
+        if ($count > 0) {
+
+            $sQuery = "UPDATE article_rating SET rating_number='$Ocjena' WHERE userID =$Korisnik AND articleID='$Clanak'";
+            $oStatement = $oConnection->prepare($sQuery);
+            
+            try
+            {
+                $oStatement->execute();
+                echo 1;
+            } catch (PDOException $error) {
+                echo $error;
+                echo 0;
+            }
+
+        } else {
+
+            $sQuery = "INSERT INTO article_rating(ratingID, userID, articleID, rating_number) VALUES (null, :User_id, :Clanak_id, :Ocjena)";
+            $oStatement = $oConnection->prepare($sQuery);
+            $oData = array(
+                'User_id' => $Korisnik,
+                'Clanak_id' => $Clanak,
+                'Ocjena' => $Ocjena,
+            );
+            try
+            {
+                $oStatement->execute($oData);
+                echo 1;
+            } catch (PDOException $error) {
+                echo $error;
+                echo 0;
+            }
+
+        }
+
+
+        
     break;
 
     default:

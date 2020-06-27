@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 10, 2020 at 05:48 PM
+-- Generation Time: Jun 20, 2020 at 03:24 PM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -34,9 +34,9 @@ CREATE TABLE IF NOT EXISTS `article` (
   `article_title` mediumtext CHARACTER SET utf8 COLLATE utf8_croatian_ci NOT NULL,
   `article_content` longtext CHARACTER SET utf8 COLLATE utf8_croatian_ci NOT NULL,
   `categoryID` int(10) NOT NULL,
-  `image` varchar(150) NOT NULL,
+  `image` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`articleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `article`
@@ -144,9 +144,7 @@ INSERT INTO `article` (`articleID`, `article_title`, `article_content`, `categor
 (99, 'Šminka', 'Šminka je vrsta kozmetike, koja se odnosi na proizvode koji su namijenjeni uljepšavanju i promjeni izgleda najčešće žena.\nKoristi se za ljepši i ženstveniji izgled. Njome se mogu naglasiti pojedini dijelovi lica poput očiju, usana, a služi i prekrivanju onoga što se želi sakriti. Postoji u raznim bojama, najčešće su crvena, ljubičasta, crna i dr. Postoje protivnici šminkanja poput nekih udruga feministica, udruga za zaštitu životinja i dr. Postoje bojazni o štetnosti šminke, kada joj istekne rok trajanja ili kada istu šminku koristi više osoba. Ponekad se u šminci koriste opasne tvari, koje mogu izazvati kožne bolesti poput dermatitisa.sss', 20, ''),
 (100, 'Solarij', 'Solarij je tehnički uređaj za zračenje tijela s UV-svjetlom. Svrha korištenja solarija je preplanulost te estetski razlozi. Također koristi se u medicini za liječenje kožnih bolesti poput akni.', 20, ''),
 (102, 'Bildanje', 'šipke', 1, ''),
-(103, 'sfdasfgas', 'dsasfgag', 1, ''),
-(105, 'asdasdas', 'asdasdasdas', 2, ''),
-(106, 'asda', 'asdad', 5, '');
+(103, 'sfdasfgas', 'dsasfgag', 1, '');
 
 -- --------------------------------------------------------
 
@@ -185,7 +183,7 @@ INSERT INTO `category` (`categoryID`, `categoryName`) VALUES
 (2, 'Povijest'),
 (3, 'Kultura'),
 (4, 'Znanost'),
-(5, 'Umjestnost'),
+(5, 'Umjetnost'),
 (6, 'Zdravstvo'),
 (7, 'Obrazovanje'),
 (8, 'Tehnologija'),
@@ -216,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `edit_history` (
   `article_id` int(11) NOT NULL,
   `date` date NOT NULL,
   PRIMARY KEY (`edit_historyID`)
-) ENGINE=MyISAM AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_croatian_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COLLATE=utf8_croatian_ci;
 
 --
 -- Dumping data for table `edit_history`
@@ -227,11 +225,17 @@ INSERT INTO `edit_history` (`edit_historyID`, `user_id`, `article_id`, `date`) V
 (2, 5, 99, '2019-08-15'),
 (3, 4, 97, '2019-08-15'),
 (4, 4, 96, '2019-08-15'),
-(33, 1, 101, '2020-05-22'),
+(38, 1, 5, '2020-06-20'),
 (34, 11, 100, '2020-06-04'),
 (35, 11, 100, '2020-06-04'),
 (36, 5, 100, '2020-06-08'),
-(37, 1, 100, '2020-06-09');
+(37, 1, 100, '2020-06-09'),
+(39, 1, 5, '2020-06-20'),
+(40, 1, 5, '2020-06-20'),
+(41, 1, 5, '2020-06-20'),
+(42, 1, 5, '2020-06-20'),
+(43, 1, 5, '2020-06-20'),
+(44, 1, 109, '2020-06-20');
 
 -- --------------------------------------------------------
 
@@ -246,17 +250,15 @@ CREATE TABLE IF NOT EXISTS `subarticle` (
   `sub_content` longtext CHARACTER SET utf8 COLLATE utf8_croatian_ci NOT NULL,
   `articleID` int(10) NOT NULL,
   PRIMARY KEY (`subarticleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `subarticle`
 --
 
 INSERT INTO `subarticle` (`subarticleID`, `sub_title`, `sub_content`, `articleID`) VALUES
-(1, 'Osobine', 'Najveći vukovi dosežu dužinu tijela do 160 cm, a rep je dugačak još do 52 cm.', 1),
-(2, 'Test', 'Probni subarticle za Solarij', 100),
-(5, 'UV zracenje', 'Cesto suncanje u solariju nije preporucljivo buduci da izlaganje UV zrakama moze izazvati preuranjeno starenje koze te razne promjene na kozi ili melanom.', 100),
-(6, 'gays', 'fay', 101);
+(5, 's', 's', 100),
+(7, 'asfasga', 'hgfdasdff', 50);
 
 -- --------------------------------------------------------
 
@@ -271,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` varchar(50) NOT NULL,
   `type` varchar(50) NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
@@ -283,7 +285,8 @@ INSERT INTO `user` (`user_id`, `username`, `password`, `type`) VALUES
 (3, 'Mirko', '12345', 'user'),
 (4, 'Krist', '666', 'user'),
 (5, 'Test', 'test', 'admin'),
-(11, 'a', 'a', 'user');
+(15, 'Ivica', '12345', 'user'),
+(16, 'a', 'a', 'admin');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

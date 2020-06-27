@@ -1,10 +1,13 @@
 var oWikiModul = angular.module("wiki-app", ["ngRoute"]);
 
+// Rute
 oWikiModul.config(function ($routeProvider) {
   $routeProvider.when("/", {
     templateUrl: "templates/home.html",
     controller: "wikiController",
   });
+
+  //Kategorija i clanak
   $routeProvider.when("/category/:path", {
     templateUrl: "templates/category.html",
     controller: "wikiController",
@@ -13,11 +16,8 @@ oWikiModul.config(function ($routeProvider) {
     templateUrl: "templates/single_article.html",
     controller: "wikiController",
   });
-  $routeProvider.when("/subarticle/:path", {
-    templateUrl: "templates/single_subarticle.html",
-    controllet: "wikiController",
-  });
 
+  //Administracija
   $routeProvider.when("/administration_users", {
     templateUrl: "templates/administration_users.html",
     controller: "wikiController",
@@ -41,12 +41,11 @@ oWikiModul.controller("wikiController", function (
   $http,
   $location,
   $rootScope,
-  $route
+  $route,
+  $window,
+  $timeout
 ) {
-  $scope.jsonClanci = [];
-
   // Modal LogIn
-
   $scope.openModal = function () {
     var modal_popup = angular.element(document.querySelector("#modalLogIn"));
     modal_popup.modal("show");
@@ -64,7 +63,6 @@ oWikiModul.controller("wikiController", function (
   };
 
   // Modal SignUp
-
   $scope.openModalSignUp = function () {
     var modal_popup = angular.element(document.querySelector("#modalSignUp"));
     modal_popup.modal("show");
@@ -82,7 +80,6 @@ oWikiModul.controller("wikiController", function (
   };
 
   // Modal dodavanje clanka
-
   $scope.modaldodavanjeopen = function () {
     var modal_popup = angular.element(
       document.querySelector("#modaldodavanjeClanka")
@@ -98,7 +95,6 @@ oWikiModul.controller("wikiController", function (
   };
 
   // Modal obrisi clanak
-
   $scope.modalClanakBrisanjeOpen = function () {
     var modal_popup = angular.element(document.querySelector("#modalDelete"));
     modal_popup.modal("show");
@@ -107,12 +103,14 @@ oWikiModul.controller("wikiController", function (
     var modal_popup = angular.element("#modalDelete");
     modal_popup.modal("hide");
   };
-  $scope.clanakBrisanje = function () {
+  $scope.clanakBrisanje = function (id, title, content) {
+    $scope.article_id = id;
+    $scope.article_title = title;
+    $scope.article_content = content;
     $scope.modalClanakBrisanjeOpen();
   };
 
   // Modal uredi clanak
-
   $scope.modalClanakEditOpen = function () {
     var modal_popup = angular.element(document.querySelector("#modalEdit"));
     modal_popup.modal("show");
@@ -121,7 +119,11 @@ oWikiModul.controller("wikiController", function (
     var modal_popup = angular.element("#modalEdit");
     modal_popup.modal("hide");
   };
-  $scope.clanakEdit = function () {
+  $scope.clanakEdit = function (id, title, content) {
+    $scope.article_id = id;
+    $scope.article_title = title;
+    $scope.article_content = content;
+
     $scope.modalClanakEditOpen();
   };
 
@@ -141,6 +143,60 @@ oWikiModul.controller("wikiController", function (
     $scope.modalDodajKategorijuOpen();
   };
 
+  // modali za brisanje uredivanje i dodavanje podkategorija
+
+  //modal obrisi podclanak
+  $scope.modalObrisiPodClanak = function () {
+    var modal_popup = angular.element(
+      document.querySelector("#modalDeleteSubarticle")
+    );
+    modal_popup.modal("show");
+  };
+
+  $scope.podclanakBrisanje = function (id, title, content) {
+    $scope.podclanak_id = id;
+    $scope.podclanak_title = title;
+    $scope.podclanak_content = content;
+    $scope.modalObrisiPodClanak();
+  };
+  $scope.modalUrediPodclanak = function () {
+    var modal_popup = angular.element(
+      document.querySelector("#modalEditSubarticle")
+    );
+    modal_popup.modal("show");
+  };
+  $scope.podclanakUredivanje = function (id, title, content) {
+    $scope.podclanak_id = id;
+    $scope.podclanak_title = title;
+    $scope.podclanak_content = content;
+    $scope.modalUrediPodclanak();
+  };
+
+  // dodavanje podclanka
+  $scope.modalAddPodclanak = function () {
+    var modal_popup = angular.element(
+      document.querySelector("#modalAddSubarticle")
+    );
+    modal_popup.modal("show");
+  };
+  $scope.dodajPodclanak = function (articleID) {
+    $scope.article_id = articleID;
+    $scope.modalAddPodclanak();
+  };
+  $scope.DodajSubarticle = function () {
+    var oData = {
+      action_id: "add_subarticle",
+      articleID: $scope.article_id,
+      sub_title: $scope.title,
+      sub_content: $scope.content,
+    };
+    console.log(oData);
+    $http.post("action.php", oData).then(function (response) {
+      alert("Podčlanak uspješno dodan!");
+      $window.location.reload();
+    });
+  };
+
   $scope.CheckLoggedIn = function () {
     $http
       .post("action.php", {
@@ -150,6 +206,7 @@ oWikiModul.controller("wikiController", function (
         function (response) {
           if (response.data.status == 1) {
             $scope.loggedin = true;
+            $scope.CheckAdmin();
           } else {
             $scope.loggedin = false;
           }
@@ -190,7 +247,14 @@ oWikiModul.controller("wikiController", function (
         if (response.data.status == 1) {
           $scope.closeModal();
           $scope.loggedin = true;
+
+          localStorage.setItem(
+            "ulogiran_id",
+            JSON.stringify(response.data.user_id)
+          );
+
           $location.path("/");
+          $scope.CheckAdmin();
           alert("Pozdrav " + $scope.username + "!");
         } else {
           alert("Neispravno korisničko ime i/ili lozinka! Pokušajte ponovno!");
@@ -207,6 +271,9 @@ oWikiModul.controller("wikiController", function (
       action_id: "register",
       username: $scope.username,
       password: $scope.password,
+      ime: $scope.ime,
+      prezime: $scope.prezime,
+      email: $scope.email,
       type: "user",
     };
     $http.post("action.php", oData).then(function (response) {
@@ -218,6 +285,20 @@ oWikiModul.controller("wikiController", function (
         alert("Neuspješna registracija!");
       }
     });
+  };
+
+  $scope.AddUser = function () {
+    var oData = {
+      action_id: "add_user",
+      username: $scope.username,
+      password: $scope.password,
+      type: $scope.tip_input,
+    };
+    console.log(oData);
+    $http.post("action.php", oData).then(function (response) {
+      alert("Korisnik uspješno dodan!");
+    });
+    $route.reload();
   };
 
   $scope.Logout = function () {
@@ -261,7 +342,11 @@ oWikiModul.controller("wikiController", function (
       url: "json.php?json_id=dohvati_podclanke",
     }).then(
       function (response) {
-        $scope.subarticles = response.data;
+        localStorage.setItem("polje_subartikl", JSON.stringify(response.data));
+
+        $scope.polje_subartikl = JSON.parse(
+          localStorage.getItem("polje_subartikl")
+        );
       },
       function (error) {
         console.log("error");
@@ -282,11 +367,13 @@ oWikiModul.controller("wikiController", function (
       }
     );
   };
-
+  // kada kliknemo na odredenu kategoriju poziva se ta funkcija
   $scope.GetAllFromCategory = function (id, name) {
     $http({
       method: "GET",
-      url: "json.php?json_id=dohvati_sve_iz_kategorije&category_id=" + id,
+      url:
+        "json.php?json_id=dohvati_sve_iz_kategorije&category_id=" +
+        $rootScope.$id,
     }).then(
       function (response) {
         $route.reload();
@@ -296,16 +383,26 @@ oWikiModul.controller("wikiController", function (
         console.log(error);
       }
     );
-    $rootScope.id = id;
+    // ovjde spremamo id kategorije
+    $rootScope.$id = id;
+    // spremamo naziv kategorije u lokalnu pohranu jer bi se inace na refresh izgubio
+    localStorage.setItem("ime_kategorije", JSON.stringify(name));
   };
 
   $scope.getArticleByType = function () {
+    //saljem upit prema bazi da mi dohvati sve clanke te kategorije
     $http({
       method: "GET",
-      url: "json.php?json_id=dohvati_clanke_po_id&category_id=" + $rootScope.id,
+      url:
+        "json.php?json_id=dohvati_clanke_po_id&category_id=" + $rootScope.$id,
     }).then(
       function (response) {
+        //u articlesByType se spremaju svi clanci te kategorije
         $scope.articlesByType = response.data;
+        // tu dohvacamo vrijednost a to je ime kategorije i spremamo u scope.ime_kategorije
+        $scope.ime_kategorije = JSON.parse(
+          localStorage.getItem("ime_kategorije")
+        );
       },
       function (error) {
         console.log(error);
@@ -336,46 +433,54 @@ oWikiModul.controller("wikiController", function (
     console.log(oData);
     $http.post("action.php", oData).then(function (response) {
       alert("Članak uspješno dodan!");
-      $location.path("/");
+      $window.location.reload();
     });
   };
-
-  $scope.AddSubarticle = function (article_id) {
-    var oData = {
-      action_id: "add_subarticle",
-      articleID: article_id,
-      sub_title: $scope.sub_title,
-      sub_content: $scope.sub_content,
-    };
-    console.log(oData);
-    $http.post("action.php", oData).then(function (response) {
-      alert("Počlanak uspješno dodan!");
-      $location.path("/");
-    });
-  };
-
+  // ovo je umjesto hrefa
+  // šaljemo objekat artikla i
   $scope.SingleArticle = function (oArticle) {
-    $rootScope.oArticle = oArticle;
+    // spremamo u globalnu varijablu oArticle i
+    localStorage.setItem("objekt_artikl", JSON.stringify(oArticle));
+    //preusmjeravamo se single_article.html
     $location.path("/article/" + oArticle.article_title);
   };
 
-  $scope.SingleSubarticle = function (oSubarticle) {
-    $rootScope.oSubarticle = oSubarticle;
-    $location.path("/subarticle/" + oSubarticle.title);
-  };
-
   $scope.ShowSingleArticle = function () {
-    $scope.single_article = $rootScope.oArticle;
-    $scope.article_title = $scope.single_article.article_title;
-    $scope.article_content = $scope.single_article.article_content;
-    $scope.article_id = $scope.single_article.articleID;
+    //$scope.single_article = $rootScope.oArticle;
+    $scope.objekt_artikl = JSON.parse(localStorage.getItem("objekt_artikl"));
+    $scope.ulogiran_id = JSON.parse(localStorage.getItem("ulogiran_id"));
+
+    // upit prema bazi da pokupi ako ima nesto sto ima taj id korisnika i tog clanka
+    //alert($scope.objekt_artikl.articleID + " " + $scope.ulogiran_id);
+    $timeout(function () {
+      $http({
+        method: "GET",
+        url:
+          "json.php?json_id=dohvati_ocjenu&article_id=" +
+          $scope.objekt_artikl.articleID +
+          "&user_id=" +
+          $scope.ulogiran_id,
+      }).then(
+        function (response) {
+          localStorage.setItem("ocjena", JSON.stringify(response.data));
+
+          $scope.ocj = JSON.parse(localStorage.getItem("ocjena"));
+
+          if (response.data == "") {
+            $scope.ocj[0] = { ocjena: 0 };
+          }
+        },
+        function (error) {
+          console.log(error);
+        }
+      );
+    }, 500);
   };
 
   $scope.ShowSingleSubarticle = function () {
-    $scope.single_subarticle = $rootScope.oSubarticle;
-    $scope.subarticle_title = $scope.single_subarticle.title;
-    $scope.subarticle_content = $scope.single_subarticle.content;
-    $scope.subarticle_id = $scope.single_subarticle.id;
+    $scope.objekt_subartikl = JSON.parse(
+      localStorage.getItem("objekt_subartikl")
+    );
   };
 
   $scope.EditArticle = function (id) {
@@ -408,10 +513,9 @@ oWikiModul.controller("wikiController", function (
     var oData = {
       action_id: "edit_subarticle",
       subarticle_id: id,
-      sub_title: $scope.subarticle_title,
-      sub_content: $scope.subarticle_content,
+      sub_title: $scope.podclanak_title,
+      sub_content: $scope.podclanak_content,
     };
-    console.log(oData);
     $http.post("action.php", oData).then(function (response) {
       alert("Članak uspješno promijenjen!");
       $location.path("/");
@@ -423,11 +527,10 @@ oWikiModul.controller("wikiController", function (
       action_id: "delete_subarticle",
       subarticle_id: subarticle_id,
     };
-    console.log(oData);
     if (confirm("Jeste li sigurni da želite obrisati podčlanak?")) {
       $http.post("action.php", oData).then(function (response) {
         alert("Podčlanak uspješno obrisan!");
-        $location.path("/");
+        $window.location.reload();
       });
     }
   };
@@ -437,7 +540,6 @@ oWikiModul.controller("wikiController", function (
       action_id: "add_category",
       categoryName: $scope.kategorijaName,
     };
-    console.log(oData);
     $http.post("action.php", oData).then(function (response) {
       alert("Kategorija uspješno dodana!");
       $route.reload();
@@ -456,19 +558,6 @@ oWikiModul.controller("wikiController", function (
         console.log(error);
       }
     );
-  };
-
-  $scope.AddUser = function () {
-    var oData = {
-      action_id: "add_user",
-      username: $scope.username,
-      password: $scope.password,
-      type: $scope.tip,
-    };
-    $http.post("action.php", oData).then(function (response) {
-      alert("Korisnik uspješno dodan!");
-    });
-    $route.reload();
   };
 
   $scope.EditHistory = function () {
@@ -502,17 +591,70 @@ oWikiModul.controller("wikiController", function (
     );
   };
 
-  $scope.DeleteCategory = function () {
+  $scope.getUsers = function () {
+    $http({
+      method: "GET",
+      url: "json.php?json_id=dohvati_korisnike",
+    }).then(
+      function (response) {
+        $scope.users = response.data;
+      },
+      function (error) {
+        console.log(error);
+      }
+    );
+  };
+
+  $scope.DeleteCategory = function (id) {
     var oData = {
       action_id: "delete_category",
-      category_id: $rootScope.id,
+      category_id: id,
     };
+    console.log(oData);
     if (confirm("Jeste li sigurni da želite obrisati kategoriju?")) {
       $http.post("action.php", oData).then(function (response) {
         alert("Kategorija uspješno obrisana!");
       });
-      $location.path("/");
+      $window.location.reload();
     }
+  };
+
+  $scope.DeleteUser = function (id) {
+    var oData = {
+      action_id: "delete_user",
+      user_id: id,
+    };
+    if (confirm("Jeste li sigurni da želite obrisati korisnika?")) {
+      $http.post("action.php", oData).then(function (response) {
+        alert("Korisnik je uspješno obrisan!");
+      });
+      $window.location.reload();
+    }
+  };
+
+  $scope.Ocijeni = function (ocjena, clanak) {
+    $scope.ulogiran_id = JSON.parse(localStorage.getItem("ulogiran_id"));
+
+    alert(ocjena + " " + clanak + " " + $scope.ulogiran_id);
+
+    // pohraniti u bazu
+
+    var oData = {
+      action_id: "ocijeni",
+      ocjena: ocjena,
+      clanak: clanak,
+      korisnik: $scope.ulogiran_id,
+    };
+
+    $http.post("action.php", oData).then(function (response) {
+      if (response.data == 1) {
+        $scope.closeModalSignUp();
+        alert("Uspješno ocjenjeno!");
+        $window.location.reload();
+      } else {
+        alert("Neuspješno ocjenjeno!");
+      }
+    });
   };
 });
 

@@ -10,8 +10,6 @@ $category_id = "";
 $user_id = "";
 $SearchParams = "";
 
-// ja ti ne znam bas php tak da me nemoj drzat za rijec sta tu napisem, brijem da je tak
-
 // ova isset funkcija provjerava jel varijabla setana, znaci gore smo stavili da je svaka ta
 // mrtva varijabla prazan string a tu provjeravamo jel puna, ak je onda dovati taj neki kurac
 if (isset($_GET['json_id'])) {
@@ -35,6 +33,17 @@ if (isset($_GET['search_params'])) {
 
 $oJson = array();
 switch ($sJsonID) {
+    case 'dohvati_ocjenu':
+        $sQuery = "SELECT ratingID, userID, articleID, rating_number FROM article_rating WHERE userID='$user_id' AND articleID='$article_id'";
+        $oRecord = $oConnection->query($sQuery);
+        while ($oRow = $oRecord->fetch(PDO::FETCH_BOTH)) {
+            $oOcjena = array(
+                'ocjena' => $oRow['rating_number'],
+            );
+            array_push($oJson, $oOcjena);
+        }
+    break;
+
     case 'dohvati_clanke':
         $sQuery = "SELECT articleID, article_title, article_content, categoryID FROM article ";
         $oRecord = $oConnection->query($sQuery);
@@ -58,6 +67,21 @@ switch ($sJsonID) {
                 $oRow['categoryName']
             );
             array_push($oJson, $oKategorije);
+        }
+        break;
+
+    case 'dohvati_korisnike':
+        $sQuery = "SELECT user_id, username, ime, prezime, email  FROM user";
+        $oRecord = $oConnection->query($sQuery);
+        while ($oRow = $oRecord->fetch(PDO::FETCH_BOTH)) {
+            $oKorisnici = new Korisnik(
+                $oRow['user_id'],
+                $oRow['username'],
+                $oRow['ime'],
+                $oRow['prezime'],
+                $oRow['email']
+            );
+            array_push($oJson, $oKorisnici);
         }
         break;
 

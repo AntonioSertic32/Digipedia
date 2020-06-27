@@ -1,5 +1,4 @@
 <!-- ---------------------------------------------------------------------------------------- Navigacija -->
-
 <nav
   class="navbar navbar-expand-sm navbar-dark"
   ng-init="CheckAdmin(); CheckLoggedIn()"
@@ -8,7 +7,7 @@
     ><img src="assets/img/logo.png" width="30" height="30" alt="logo" />
     Digipedia</a
   >
-
+  <!-- button za mobilnu verziju ili kada se minimizira ekran-->
   <button
     class="navbar-toggler"
     type="button"
@@ -19,42 +18,36 @@
     aria-label="Toggle navigation"
   >
     <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbar-list">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item" ng-if="loggedin">
-      </li>
-      <li class="nav-item" ng-if="admin">
-      </li>
-    </ul>
 
-    <ul class="navbar-nav">
-      <li class="nav-item" ng-if="admin">
-        <a class="nav-link text-primary" href="#!administration_users">Administracija</a
-      >
-    </li>
-      <li class="nav-item" ng-if="!loggedin">
-        <a class="nav-link text-primary" href="" ng-click="modalLogIn()"
-          ><i class="fa fa-user"></i> Prijava</a
-        >
-      </li>
-      <li class="nav-item" ng-if="!loggedin">
-        <a class="nav-link text-primary" href="" ng-click="modalSignUp()"
-          ><i class="fa fa-sign-in"></i> Registracija</a
-        >
-      </li>
-      <li class="nav-item" ng-if="loggedin">
-        <button class="btn btn-outline-warning" ng-click="Logout()">
-          Odjava
-        </button>
-      </li>
-    </ul>
+  </button>
+  <!--div je za navigaciju, collapse je da se otvara ispod-->
+  <div class="navbar-collapse collapse w-100 order-3" id="navbar-list">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item" ng-if="admin">
+          <a class="nav-link text-primary" href="#!administration_users">Administracija</a
+        ></li>
+        <li class="nav-item" ng-if="!loggedin">
+          <a class="nav-link text-primary" href="" ng-click="modalLogIn()"
+            ><i class="fa fa-user"></i> Prijava</a
+          >
+        </li>
+        <li class="nav-item" ng-if="!loggedin">
+          <a class="nav-link text-primary" href="" ng-click="modalSignUp()"
+            ><i class="fa fa-sign-in"></i> Registracija</a
+          >
+        </li>
+        <li class="nav-item" ng-if="loggedin">
+          <button class="btn btn-lg btn-warning" ng-click="Logout()">
+            Odjava
+          </button>
+        </li>
+      </ul>
   </div>
 </nav>
 
 <!-- ---------------------------------------------------------------------------------------- Seredina stranice -->
 
-<div class="row">
+<div class="row"><!--row da sve bude u jednom redu -->
   <section class="col-sm-10 lijevo" ng-init="getArticles()">
     <!-- ---------------------------------------------------------------- Pretrazivanje -->
 
@@ -70,10 +63,10 @@
     </div>
     <div class="container-fluid d-flex" ng-class="{' justify-content-between': loggedin, ' justify-content-center': !loggedin}">
       <div class="gumbi">
-        <button ng-if="loggedin" class="btn bg-primary btn-lg dodavanje_clanka" ng-click="modaldodavanjeClanka()">
+        <button ng-if="loggedin" class="btn bg-success btn-lg dodavanje_clanka" ng-click="modaldodavanjeClanka()">
           <i class="fa fa-plus"></i> Dodaj članak
         </button>
-        <button ng-if="admin" class="btn bg-primary btn-lg dodavanje_kategorije" ng-click="modaldodavanjeKategorije()">
+        <button ng-if="admin" class="btn bg-success btn-lg dodavanje_kategorije" ng-click="modaldodavanjeKategorije()">
           <i class="fa fa-plus"></i> Dodaj kategoriju
         </button>
       </div>
@@ -160,7 +153,7 @@
                   <div>
                     <form>
                       <div>
-                        <label for="name">Korisničko ime</label>
+                        <label for="name">Korisničko ime ili Email</label>
                         <input
                           type="text"
                           class="form-control"
@@ -259,6 +252,35 @@
                           required
                           data-eye
                           ng-model="password"
+                        />
+                      </div>
+
+                      <div>
+                        <label>Ime</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          data-eye
+                          ng-model="ime"
+                        />
+                      </div><div>
+                        <label>Prezime</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          data-eye
+                          ng-model="prezime"
+                        />
+                      </div><div>
+                        <label>Email</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          data-eye
+                          ng-model="email"
                         />
                       </div>
                       <br />
